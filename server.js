@@ -40,7 +40,7 @@ app.get("/api/cestas", async (req, res) => {
     const result = await pool.query(`
       SELECT cp.cantidad_producto, p.id AS id_producto, p.titulo, p.imagen1
       FROM cestas_productos cp
-      JOIN producto p ON cp.id_producto = p.id
+      JOIN productos p ON cp.id_producto = p.id
     `);
 
     res.json(result.rows);
@@ -49,5 +49,7 @@ app.get("/api/cestas", async (req, res) => {
   }
 });
 
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API escuchando en puerto ${PORT}`));
+
