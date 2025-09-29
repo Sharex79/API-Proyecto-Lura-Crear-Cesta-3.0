@@ -16,12 +16,11 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Endpoint para crear cesta (solo id_producto y cantidad_producto)
+// Endpoint para crear cesta (insertar productos)
 app.post("/api/crear_cesta", async (req, res) => {
   try {
     const { id_producto, cantidad_producto } = req.body;
 
-    // Insertar en tabla cestas_productos
     const result = await pool.query(
       `INSERT INTO cestas_productos (id_producto, cantidad_producto)
        VALUES ($1, $2) RETURNING id_producto, cantidad_producto`,
@@ -35,12 +34,15 @@ app.post("/api/crear_cesta", async (req, res) => {
   }
 });
 
-// Endpoint para obtener todas las cestas
+// Endpoint para obtener todos los productos en la cesta con su título y foto
 app.get("/api/cestas", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT id_producto, cantidad_producto FROM cestas_productos"
-    );
+    const result = await pool.query(`
+      SELECT cp.cantidad_producto, p.id_producto, p.titulo, p.imagen1
+      FROM cestas_productos cp
+      JOIN producto p ON cp.id_producto = p.id_producto
+    `);
+
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
