@@ -38,9 +38,9 @@ app.post("/api/crear_cesta", async (req, res) => {
 app.get("/api/cestas", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT cp.cantidad_producto, p.id_producto, p.titulo, p.imagen1
+      SELECT cp.cantidad_producto, p.id AS id_producto, p.titulo, p.imagen1
       FROM cestas_productos cp
-      JOIN producto p ON cp.id_producto = p.id_producto
+      JOIN producto p ON cp.id_producto = p.id
     `);
 
     res.json(result.rows);
