@@ -16,16 +16,16 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Endpoint para crear cesta
+// Endpoint para crear cesta (solo id_producto y cantidad_producto)
 app.post("/api/crear_cesta", async (req, res) => {
   try {
-    const { usuario_id, producto_id, cantidad } = req.body;
+    const { id_producto, cantidad_producto } = req.body;
 
     // Insertar en tabla cestas_productos
     const result = await pool.query(
-      `INSERT INTO cestas_productos (usuario_id, producto_id, cantidad)
-       VALUES ($1, $2, $3) RETURNING *`,
-      [usuario_id, producto_id, cantidad]
+      `INSERT INTO cestas_productos (id_producto, cantidad_producto)
+       VALUES ($1, $2) RETURNING id_producto, cantidad_producto`,
+      [id_producto, cantidad_producto]
     );
 
     res.json({ ok: true, cesta: result.rows[0] });
@@ -35,19 +35,17 @@ app.post("/api/crear_cesta", async (req, res) => {
   }
 });
 
-// Endpoint para obtener cestas de un usuario
-app.get("/api/cestas/:usuario_id", async (req, res) => {
+// Endpoint para obtener todas las cestas
+app.get("/api/cestas", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM cestas_productos WHERE usuario_id = $1",
-      [req.params.usuario_id]
+      "SELECT id_producto, cantidad_producto FROM cestas_productos"
     );
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API escuchando en puerto ${PORT}`));
-
