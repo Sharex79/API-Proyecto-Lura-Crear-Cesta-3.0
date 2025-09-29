@@ -8,9 +8,9 @@ app.use(express.json());
 
 // Configuración conexión DB
 const pool = new Pool({
-  host: "switchback.proxy.rlwy.net",
-  port: 15893,
-  database: "railway",
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   ssl: { rejectUnauthorized: false }
@@ -50,3 +50,4 @@ app.get("/api/cestas/:usuario_id", async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API escuchando en puerto ${PORT}`));
+
