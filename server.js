@@ -36,14 +36,18 @@ app.post("/api/crear_cesta", async (req, res) => {
 
 app.get("/api/cestas", async (req, res) => {
   try {
+    console.log("GET /api/cestas called"); // Debug log
+    
     const result = await pool.query(`
-      SELECT cp.cantidad_producto, p.id AS id_producto, p.titulo, p.imagen1, p.unidad_medida
+      SELECT cp.cantidad_producto, p.id AS id_producto, p.titulo, p.imagen1, p.unidad_medido
       FROM cestas_productos cp
       JOIN public.productos p ON cp.id_producto = p.id
     `);
 
+    console.log("Query result:", result.rows); // Debug log
     res.json(result.rows);
   } catch (err) {
+    console.error("Error in /api/cestas:", err); // Debug log
     res.status(500).json({ ok: false, error: err.message });
   }
 });
