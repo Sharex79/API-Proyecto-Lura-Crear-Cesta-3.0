@@ -39,7 +39,7 @@ app.get("/api/cestas", async (req, res) => {
     console.log("GET /api/cestas called"); // Debug log
     
     const result = await pool.query(`
-      SELECT cp.cantidad_producto, p.id AS id_producto, p.titulo, p.imagen1, p.unidad_medido
+      SELECT cp.cantidad_producto, cp.unidad_medida, p.id AS id_producto, p.titulo, p.imagen1
       FROM cestas_productos cp
       JOIN public.productos p ON cp.id_producto = p.id
     `);
